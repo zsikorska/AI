@@ -1,6 +1,11 @@
+import graph.Edge;
+import graph.Graph;
+import algorithms.Dijkstra;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -47,8 +52,18 @@ public class Main {
         return LocalTime.of(hour, minute);
     }
 
+    public static void printPath(ArrayList<Edge> path) {
+        for (Edge edge : path) {
+            System.out.println(edge.getId() + " " + edge.getLine() + " " + edge.getStartStop() + " " + edge.getDepartureTime() + " " + edge.getEndStop() + " " + edge.getArrivalTime());
+        }
+    }
+
     public static void main(String[] args) throws FileNotFoundException {
         Graph graph = readGraph("connection_graph.csv");
-        graph.printGraph();
+        //graph.printGraph();
+
+        ArrayList<Edge> path = Dijkstra.findShortestPath("Rdestowa", "Piastowska", LocalTime.of(12, 0), graph);
+        printPath(path);
+
     }
 }

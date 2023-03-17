@@ -1,3 +1,5 @@
+package graph;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -12,7 +14,7 @@ public class Graph {
         this.neighbors = neighbors;
     }
 
-    public HashMap<String, ArrayList<Edge>> getNeighbors() {
+    public HashMap<String, ArrayList<Edge>> getGraph() {
         return neighbors;
     }
 
@@ -29,7 +31,7 @@ public class Graph {
 
     @Override
     public String toString() {
-        return "Graph{" +
+        return "graph.Graph{" +
                 "neighbors=" + neighbors +
                 '}';
     }
