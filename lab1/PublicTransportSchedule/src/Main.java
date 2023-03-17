@@ -1,3 +1,4 @@
+import algorithms.AStar;
 import graph.Edge;
 import graph.Graph;
 import algorithms.Dijkstra;
@@ -62,8 +63,14 @@ public class Main {
         Graph graph = readGraph("connection_graph.csv");
         //graph.printGraph();
 
-        ArrayList<Edge> path = Dijkstra.findShortestPath("Rdestowa", "Piastowska", LocalTime.of(12, 0), graph);
+        double startTime = System.nanoTime();
+        //System.out.println(Dijkstra.findShortestPath("Nowowiejska", "FAT", LocalTime.of(1, 0), graph));
+        //System.out.println(AStar.findShortestPath("Nowowiejska", "FAT", LocalTime.of(1, 0), graph));
+        //ArrayList<Edge> path = Dijkstra.findShortestPath("Nowowiejska", "FAT", LocalTime.of(1, 0), graph);
+        ArrayList<Edge> path = AStar.findShortestPath("Nowowiejska", "FAT", LocalTime.of(1, 0), graph);
+        double endTime = System.nanoTime();
         printPath(path);
+        System.out.println("Time: " + (endTime - startTime) / 1000000000 + "s");
 
     }
 }
