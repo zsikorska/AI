@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static void readGraph(String filename) throws FileNotFoundException {
+    public static Graph readGraph(String filename) throws FileNotFoundException {
         Graph graph = new Graph();
         Scanner scanner = new Scanner(new File(filename));
         scanner.nextLine(); // skip header
@@ -14,8 +14,9 @@ public class Main {
             String line = scanner.nextLine();
             String[] tokens = line.split(",");
             Edge edge = parseEdge(tokens);
-            System.out.println(edge);
+            graph.addEdge(edge);
         }
+        return graph;
     }
 
     public static Edge parseEdge(String[] tokens) {
@@ -46,10 +47,8 @@ public class Main {
         return LocalTime.of(hour, minute);
     }
 
-
-
-
     public static void main(String[] args) throws FileNotFoundException {
-        readGraph("connection_graph.csv");
+        Graph graph = readGraph("connection_graph.csv");
+        graph.printGraph();
     }
 }
