@@ -2,6 +2,7 @@ package algorithms;
 
 import graph.Edge;
 import graph.Graph;
+import graph.Vertex;
 
 import java.time.LocalTime;
 import java.util.*;
@@ -25,9 +26,15 @@ public class Dijkstra {
             if (current.equals(endStop)) {
                 break;
             }
-            for (Edge edge : graph.getGraph().get(current)) {
-                String next = edge.getEndStop();
+            for (String next : graph.getVertex(current).getNeighbours().keySet()) {
                 currentTime = currentTimes.get(current);
+                // sort edges by time difference
+                ArrayList<Edge> edges = graph.getVertex(current).getNeighbours().get(next);
+                updateTimeDifference(edges, currentTime);
+                sortEdgesByTimeDifference(edges);
+                // choose edge with minimal time difference
+                Edge edge = edges.get(0);
+
                 int newCost = costSoFar.get(current) + countCost(currentTime, edge.getDepartureTime())
                         + countCost(edge.getDepartureTime(), edge.getArrivalTime());
                 if (!costSoFar.containsKey(next) || newCost < costSoFar.get(next)) {
@@ -58,6 +65,16 @@ public class Dijkstra {
             cost = (24 - startTime.getHour() + arrivalTime.getHour()) * 60 + arrivalTime.getMinute() - startTime.getMinute();
         }
         return cost;
+    }
+
+    public static void updateTimeDifference(ArrayList<Edge> edges, LocalTime currentTime) {
+        for (Edge edge : edges) {
+            edge.setTimeDifference(countCost(currentTime, edge.getDepartureTime()));
+        }
+    }
+
+    public static void sortEdgesByTimeDifference(ArrayList<Edge> edges) {
+        edges.sort(Comparator.comparingInt(Edge::getTimeDifference));
     }
 
 

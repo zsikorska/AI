@@ -2,6 +2,7 @@ package algorithms;
 
 import graph.Edge;
 import graph.Graph;
+import graph.Vertex;
 
 import java.time.LocalTime;
 import java.util.*;
@@ -17,6 +18,7 @@ public class AStar {
         costSoFar.put(startStop, 0);
         currentTimes.put(startStop, startTime);
         LocalTime currentTime;
+        Vertex endVertex = graph.getVertex(endStop);
         int counter = 0;
 
         while (!frontier.isEmpty()) {
@@ -25,16 +27,20 @@ public class AStar {
             if (current.equals(endStop)) {
                 break;
             }
-            // TODO: sort edges and make loop on neigbour nodes instead of edges (it require change of structure of graph)
-            for (Edge edge : graph.getGraph().get(current)) {
-                String next = edge.getEndStop();
+            for (String next : graph.getVertex(current).getNeighbours().keySet()) {
                 currentTime = currentTimes.get(current);
+                // sort edges by time difference
+                ArrayList<Edge> edges = graph.getVertex(current).getNeighbours().get(next);
+                updateTimeDifference(edges, currentTime);
+                sortEdgesByTimeDifference(edges);
+                // choose edge with minimal time difference
+                Edge edge = edges.get(0);
+
                 int newCost = costSoFar.get(current) + countCost(currentTime, edge.getDepartureTime())
                         + countCost(edge.getDepartureTime(), edge.getArrivalTime());
                 if (!costSoFar.containsKey(next) || newCost < costSoFar.get(next)) {
                     costSoFar.put(next, newCost);
-                    // TODO: write geo data in vertex
-                    frontier.add(Map.entry(next, newCost + heuristic(edge, 51.09375561, 16.98037615)));
+                    frontier.add(Map.entry(next, newCost + Heuristic.euclideanDistanceHeuristic(graph.getVertex(next), endVertex)));
                     cameFrom.put(next, edge);
                     currentTimes.put(next, edge.getArrivalTime());
                 }
@@ -52,25 +58,24 @@ public class AStar {
         return path;
     }
 
-    private static int countCost(LocalTime startTime, LocalTime arrivalTime) {
+    private static int countCost(LocalTime startTime, LocalTime endTime) {
         int cost = 0;
-        if (!startTime.isAfter(arrivalTime)) {
-            cost = (arrivalTime.getHour() - startTime.getHour()) * 60 + arrivalTime.getMinute() - startTime.getMinute();
+        if (!startTime.isAfter(endTime)) {
+            cost = (endTime.getHour() - startTime.getHour()) * 60 + endTime.getMinute() - startTime.getMinute();
         } else {
-            cost = (24 - startTime.getHour() + arrivalTime.getHour()) * 60 + arrivalTime.getMinute() - startTime.getMinute();
+            cost = (24 - startTime.getHour() + endTime.getHour()) * 60 + endTime.getMinute() - startTime.getMinute();
         }
         return cost;
     }
 
-    private static double heuristic(Edge edge, double endLatitude, double endLongitude) {
-        // euclidean distance
-        double x1 = edge.getEndLatitude();
-        double y1 = edge.getEndLongitude();
-        double result = Math.sqrt(Math.pow(endLatitude - x1, 2) + Math.pow(endLongitude - y1, 2));
-        // convert result from degrees to km
-        result = result * 111.32;
-        result = result / 50;
-        return result * 60;
-
+    public static void updateTimeDifference(ArrayList<Edge> edges, LocalTime currentTime) {
+        for (Edge edge : edges) {
+            edge.setTimeDifference(countCost(currentTime, edge.getDepartureTime()));
+        }
     }
+
+    public static void sortEdgesByTimeDifference(ArrayList<Edge> edges) {
+        edges.sort(Comparator.comparingInt(Edge::getTimeDifference));
+    }
+
 }
