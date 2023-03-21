@@ -10,14 +10,12 @@ public class Edge {
     private final LocalTime departureTime;
     private final String endStop;
     private final LocalTime arrivalTime;
-    private final double startLatitude;
-    private final double startLongitude;
-    private final double endLatitude;
-    private final double endLongitude;
+    // in minutes, if departure time is earlier than current time then timeDifference = time difference + 24h*60min
+    private int timeDifference = 0;
+
 
     public Edge(int id, String company, String line, String startStop, LocalTime departureTime, String endStop,
-                LocalTime arrivalTime, double startLatitude, double startLongitude,
-                double endLatitude, double endLongitude) {
+                LocalTime arrivalTime) {
         this.id = id;
         this.company = company;
         this.line = line;
@@ -25,10 +23,6 @@ public class Edge {
         this.departureTime = departureTime;
         this.endStop = endStop;
         this.arrivalTime = arrivalTime;
-        this.startLatitude = startLatitude;
-        this.startLongitude = startLongitude;
-        this.endLatitude = endLatitude;
-        this.endLongitude = endLongitude;
     }
 
     public int getId() {
@@ -55,22 +49,6 @@ public class Edge {
         return arrivalTime;
     }
 
-    public double getStartLatitude() {
-        return startLatitude;
-    }
-
-    public double getStartLongitude() {
-        return startLongitude;
-    }
-
-    public double getEndLatitude() {
-        return endLatitude;
-    }
-
-    public double getEndLongitude() {
-        return endLongitude;
-    }
-
     public String getCompany() {
         return company;
     }
@@ -85,10 +63,14 @@ public class Edge {
                 ", departureTime=" + departureTime +
                 ", endStop='" + endStop + '\'' +
                 ", arrivalTime=" + arrivalTime +
-                ", startLatitude=" + startLatitude +
-                ", startLongitude=" + startLongitude +
-                ", endLatitude=" + endLatitude +
-                ", endLongitude=" + endLongitude +
                 '}';
+    }
+
+    public int getTimeDifference() {
+        return timeDifference;
+    }
+
+    public void setTimeDifference(int timeDifference) {
+        this.timeDifference = timeDifference;
     }
 }

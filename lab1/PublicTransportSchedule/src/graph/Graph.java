@@ -1,45 +1,49 @@
 package graph;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Graph {
-    private final HashMap<String, ArrayList<Edge>> neighbors;
+    private final HashMap<String, Vertex> vertexes;
 
     public Graph() {
-        this.neighbors = new HashMap<>();
+        this.vertexes = new HashMap<>();
     }
 
-    public Graph(HashMap<String, ArrayList<Edge>> neighbors) {
-        this.neighbors = neighbors;
+    public Graph(HashMap<String, Vertex> vertexes) {
+        this.vertexes = vertexes;
     }
 
-    public HashMap<String, ArrayList<Edge>> getGraph() {
-        return neighbors;
+    public HashMap<String, Vertex> getGraph() {
+        return vertexes;
     }
 
-    public void addEdge(Edge edge) {
-        if (neighbors.containsKey(edge.getStartStop())) {
-            neighbors.get(edge.getStartStop()).add(edge);
-        } else {
-            ArrayList<Edge> edges = new ArrayList<>();
-            edges.add(edge);
-            neighbors.put(edge.getStartStop(), edges);
+    public boolean addVertex(Vertex vertex) {
+        if (!vertexes.containsKey(vertex.getName())) {
+            vertexes.put(vertex.getName(), vertex);
+            return true;
         }
+        return false;
     }
 
+    public boolean containsVertex(String name) {
+        return vertexes.containsKey(name);
+    }
+
+    public Vertex getVertex(String name) {
+        return vertexes.get(name);
+    }
 
     @Override
     public String toString() {
         return "graph.Graph{" +
-                "neighbors=" + neighbors +
+                "vertexes=" + vertexes +
                 '}';
     }
 
     public void printGraph(){
         System.out.println("Graph:");
-        for (String key : neighbors.keySet()) {
-            System.out.println(key + ": " + neighbors.get(key) + "\n");
+        for (String key : vertexes.keySet()) {
+            System.out.println(key + ": " + vertexes.get(key) + "\n");
         }
 
     }
