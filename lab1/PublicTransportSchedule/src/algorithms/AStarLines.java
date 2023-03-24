@@ -30,7 +30,7 @@ public class AStarLines {
 
             if (currentEdge.getEndStop().equals(endStop)) {
                 ArrayList<Edge> path = new ArrayList<>();
-                while (currentEdge != null) {
+                while (!currentEdge.equals(startEdge)) {
                     path.add(currentEdge);
                     currentEdge = cameFrom.get(currentEdge);
                 }
@@ -57,7 +57,7 @@ public class AStarLines {
                 }
             }
         }
-        return new ArrayList<>();
+        return null;
     }
 
     public static void updateChangeOfLine(Edge edge, String currentLine, Edge currentEdge) {

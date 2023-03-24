@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
 
 public class Main {
@@ -86,8 +87,42 @@ public class Main {
     }
 
     public static void printPath(ArrayList<Edge> path) {
-        for (Edge edge : path) {
-            System.out.println(edge.getId() + " " + edge.getLine() + " " + edge.getStartStop() + " " + edge.getDepartureTime() + " " + edge.getEndStop() + " " + edge.getArrivalTime());
+        if (path == null) {
+            System.out.println("Destination is not reachable. No path found.");
+        }
+        else if (path.isEmpty()) {
+            System.out.println("End stop is also start stop. No path to find.");
+        }
+        else {
+            System.out.println("Path found: ");
+            Iterator<Edge> iterator = path.iterator();
+            Edge edge = iterator.next();
+            String previousLine = "";
+            String output = "";
+            String endStop = "";
+            LocalTime arrivalTime = null;
+
+            if (iterator.hasNext()) {
+                previousLine = edge.getLine();
+                output = edge.getLine() + ": " + edge.getStartStop() + " (" + edge.getDepartureTime() + ")  - ";
+                endStop = edge.getEndStop();
+                arrivalTime = edge.getArrivalTime();
+            }
+
+            while (iterator.hasNext()) {
+                edge = iterator.next();
+                if (!edge.getLine().equals(previousLine)) {
+                    output = output + " " + endStop + " (" + arrivalTime + ")";
+                    System.out.println(output);
+                    output = edge.getLine() + ": " + edge.getStartStop() + " (" + edge.getDepartureTime() + ")  - ";
+                    previousLine = edge.getLine();
+                }
+                endStop = edge.getEndStop();
+                arrivalTime = edge.getArrivalTime();
+            }
+            output = output + " " + endStop + " (" + arrivalTime + ")";
+            System.out.println(output);
+            System.out.println();
         }
     }
 
