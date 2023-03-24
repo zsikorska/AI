@@ -24,7 +24,13 @@ public class Dijkstra {
             counter++;
             String current = frontier.poll().getKey();
             if (current.equals(endStop)) {
-                break;
+                ArrayList<Edge> path = new ArrayList<>();
+                while (!Objects.equals(current, startStop)) {
+                    path.add(cameFrom.get(current));
+                    current = cameFrom.get(current).getStartStop();
+                }
+                Collections.reverse(path);
+                return path;
             }
             for (String next : graph.getVertex(current).getNeighbours().keySet()) {
                 currentTime = currentTimes.get(current);
@@ -46,15 +52,7 @@ public class Dijkstra {
             }
         }
 
-        // return path
-        String current = endStop;
-        ArrayList<Edge> path = new ArrayList<>();
-        while (!Objects.equals(current, startStop)) {
-            path.add(cameFrom.get(current));
-            current = cameFrom.get(current).getStartStop();
-        }
-        Collections.reverse(path);
-        return path;
+        return null;
     }
 
     private static int countCost(LocalTime startTime, LocalTime arrivalTime) {

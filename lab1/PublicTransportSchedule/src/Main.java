@@ -131,10 +131,10 @@ public class Main {
         //graph.printGraph();
 
         double startTime = System.nanoTime();
-        //System.out.println(Dijkstra.findShortestPath("Nowowiejska", "FAT", LocalTime.of(1, 0), graph));
-        //System.out.println(AStar.findShortestPath("Nowowiejska", "FAT", LocalTime.of(1, 0), graph));
-        //ArrayList<Edge> path = Dijkstra.findShortestPath("Nowowiejska", "FAT", LocalTime.of(1, 0), graph);
-        ArrayList<Edge> path = AStarLines.findShortestPath("Bagatela", "Bajana", LocalTime.of(12, 23), graph);
+        //ArrayList<Edge> path = Dijkstra.findShortestPath("Nowowiejska", "Piastowska", LocalTime.of(12, 0), graph);
+        //ArrayList<Edge> path = AStar.findShortestPath("Nowowiejska", "Piastowska", LocalTime.of(12, 0), graph);
+        ArrayList<Edge> path = AStar.findShortestPath("Nowowiejska", "TYNIECKA (pętla)", LocalTime.of(1, 0), graph);
+        //ArrayList<Edge> path = AStarLines.findShortestPath("Bagatela", "Bajana", LocalTime.of(12, 23), graph);
         //ArrayList<Edge> path = AStarLines.findShortestPath("Bagatela", "Piastowska", LocalTime.of(6, 0), graph);
         //ArrayList<Edge> path = AStarLines.findShortestPath("Nowowiejska", "Piastowska", LocalTime.of(12, 0), graph);
         double endTime = System.nanoTime();
