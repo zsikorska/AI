@@ -41,8 +41,6 @@ public class AStarLines {
             LocalTime currentTime = currentTimes.get(currentEdge);
             String currentLine = currentLines.get(currentEdge);
             for (ArrayList<Edge> edges : graph.getVertex(currentEdge.getEndStop()).getNeighbours().values()) {
-                updateTimeDifference(edges, currentTime);
-                sortEdgesByTimeDifference(edges);
                 for (Edge edge : edges) {
                     updateChangeOfLine(edge, currentLine, currentEdge);
                     String next = edge.getEndStop();

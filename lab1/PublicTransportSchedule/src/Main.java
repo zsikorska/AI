@@ -1,9 +1,8 @@
-import algorithms.AStar;
-import algorithms.AStarChangesOfLine;
 import algorithms.AStarLines;
+import algorithms.Dijkstra;
+import algorithms.AStar;
 import graph.Edge;
 import graph.Graph;
-import algorithms.Dijkstra;
 import graph.Vertex;
 
 import java.io.File;
@@ -55,10 +54,6 @@ public class Main {
         LocalTime arrivalTime = parseTime(tokens[4]);
         String startStop = tokens[5];
         String endStop = tokens[6];
-        double startLatitude = Double.parseDouble(tokens[7]);
-        double startLongitude = Double.parseDouble(tokens[8]);
-        double endLatitude = Double.parseDouble(tokens[9]);
-        double endLongitude = Double.parseDouble(tokens[10]);
 
         return new Edge(id, company, line, startStop, departureTime, endStop, arrivalTime);
     }
@@ -104,9 +99,9 @@ public class Main {
         //System.out.println(Dijkstra.findShortestPath("Nowowiejska", "FAT", LocalTime.of(1, 0), graph));
         //System.out.println(AStar.findShortestPath("Nowowiejska", "FAT", LocalTime.of(1, 0), graph));
         //ArrayList<Edge> path = Dijkstra.findShortestPath("Nowowiejska", "FAT", LocalTime.of(1, 0), graph);
-        //ArrayList<Edge> path = AStarLines.findShortestPath("Bagatela", "Bajana", LocalTime.of(12, 23), graph);
+        ArrayList<Edge> path = AStarLines.findShortestPath("Bagatela", "Bajana", LocalTime.of(12, 23), graph);
         //ArrayList<Edge> path = AStarLines.findShortestPath("Bagatela", "Piastowska", LocalTime.of(6, 0), graph);
-        ArrayList<Edge> path = AStarLines.findShortestPath("Nowowiejska", "Piastowska", LocalTime.of(12, 0), graph);
+        //ArrayList<Edge> path = AStarLines.findShortestPath("Nowowiejska", "Piastowska", LocalTime.of(12, 0), graph);
         double endTime = System.nanoTime();
         printPath(path);
         System.out.println("Time: " + (endTime - startTime) / 1000000000 + "s");
