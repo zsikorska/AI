@@ -33,6 +33,12 @@ public class Graph {
         return vertexes.get(name);
     }
 
+    public void sortAllEdges() {
+        for (String key : vertexes.keySet()) {
+            vertexes.get(key).sortEdges();
+        }
+    }
+
     @Override
     public String toString() {
         return "graph.Graph{" +

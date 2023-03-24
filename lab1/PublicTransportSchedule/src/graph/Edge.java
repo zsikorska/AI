@@ -11,7 +11,8 @@ public class Edge {
     private final String endStop;
     private final LocalTime arrivalTime;
     // in minutes, if departure time is earlier than current time then timeDifference = time difference + 24h*60min
-    private int timeDifference = 0;
+    public int timeDifference = 0;
+    private int changeOfLine = 0;
 
 
     public Edge(int id, String company, String line, String startStop, LocalTime departureTime, String endStop,
@@ -72,5 +73,17 @@ public class Edge {
 
     public void setTimeDifference(int timeDifference) {
         this.timeDifference = timeDifference;
+    }
+
+    public int compareTo(Edge edge) {
+        return this.getDepartureTime().compareTo(edge.getDepartureTime());
+    }
+
+    public int getChangeOfLine() {
+        return changeOfLine;
+    }
+
+    public void setChangeOfLine(int changeOfLine) {
+        this.changeOfLine = changeOfLine;
     }
 }

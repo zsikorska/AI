@@ -58,7 +58,7 @@ public class AStar {
         return path;
     }
 
-    private static int countCost(LocalTime startTime, LocalTime endTime) {
+    public static int countCost(LocalTime startTime, LocalTime endTime) {
         int cost = 0;
         if (!startTime.isAfter(endTime)) {
             cost = (endTime.getHour() - startTime.getHour()) * 60 + endTime.getMinute() - startTime.getMinute();

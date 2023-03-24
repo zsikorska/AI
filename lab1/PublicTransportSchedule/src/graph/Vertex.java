@@ -38,6 +38,12 @@ public class Vertex {
         return neighbors;
     }
 
+    public void sortEdges() {
+        for (String key : neighbors.keySet()) {
+            neighbors.get(key).sort(Edge::compareTo);
+        }
+    }
+
     public boolean addNeigbour(Edge edge) {
         if (edge.getStartStop().equals(name)){
             if (neighbors.containsKey(edge.getEndStop())) {
