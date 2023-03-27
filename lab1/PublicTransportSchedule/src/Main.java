@@ -1,3 +1,4 @@
+import algorithms.AStarFaster;
 import algorithms.AStarLines;
 import algorithms.Dijkstra;
 import algorithms.AStar;
@@ -131,18 +132,20 @@ public class Main {
         Graph graph = readGraph("connection_graph.csv");
         //graph.printGraph();
 
-        //double startTime = System.nanoTime();
+        double startTime = System.nanoTime();
         //ArrayList<Edge> path = Dijkstra.findShortestPath("Nowowiejska", "Piastowska", LocalTime.of(12, 0), graph).getPath();
-        //ArrayList<Edge> path = AStar.findShortestPath("Nowowiejska", "Piastowska", LocalTime.of(12, 0), graph);
+        //ArrayList<Edge> path = AStarFaster.findShortestPath("Nowowiejska", "Piastowska", LocalTime.of(12, 0), graph).getPath();
         //ArrayList<Edge> path = AStar.findShortestPath("Nowowiejska", "TYNIECKA (pętla)", LocalTime.of(1, 0), graph);
         //ArrayList<Edge> path = AStarLines.findShortestPath("Bagatela", "Bajana", LocalTime.of(12, 23), graph);
         //ArrayList<Edge> path = AStarLines.findShortestPath("Bagatela", "Piastowska", LocalTime.of(6, 0), graph);
         //ArrayList<Edge> path = AStarLines.findShortestPath("Nowowiejska", "Piastowska", LocalTime.of(12, 0), graph);
+        //ArrayList<Edge> path = AStarFaster.findShortestPath("Jaszkotle - kościół", "Kiełczów - WODROL", LocalTime.of(20, 14), graph).getPath();
         //double endTime = System.nanoTime();
         //printPath(path);
         //System.out.println("Time: " + (endTime - startTime) / 1000000000 + "s");
 
         Simulation simulation = new Simulation(graph);
+        //simulation.simulate(10,1);
         simulation.bigSimulation(10,100);
 
     }

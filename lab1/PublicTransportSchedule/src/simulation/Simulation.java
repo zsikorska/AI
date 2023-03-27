@@ -1,6 +1,7 @@
 package simulation;
 
 import algorithms.AStar;
+import algorithms.AStarFaster;
 import algorithms.AStarLines;
 import algorithms.Dijkstra;
 import graph.Graph;
@@ -49,6 +50,7 @@ public class Simulation {
 
             dijkstraSimulation(startStops.get(i), endStops.get(i), times.get(i), numberOfRepetitions);
             aStarSimulation(startStops.get(i), endStops.get(i), times.get(i), numberOfRepetitions);
+            aStarFasterSimulation(startStops.get(i), endStops.get(i), times.get(i), numberOfRepetitions);
             //aStarLinesSimulation(startStops.get(i), endStops.get(i), times.get(i), numberOfRepetitions);
         }
     }
@@ -103,6 +105,31 @@ public class Simulation {
 
     }
 
+    public void aStarFasterSimulation(String startStop, String endStop, LocalTime time, int numberOfRepetitions){
+        double startTime;
+        double endTime;
+        double totalTime = 0;
+
+        System.out.println("#######  A* Time Faster  #######");
+
+        for (int i = 0; i < numberOfRepetitions; i++) {
+            startTime = System.currentTimeMillis();
+            Result result = AStarFaster.findShortestPath(startStop, endStop, time, graph);
+            endTime = System.currentTimeMillis();
+            totalTime += endTime - startTime;
+
+            if(i == 0){
+                result.printPath();
+                System.out.println("Cost: " + result.getCost());
+                System.out.println("Loop iterations: " + result.getLoopIterations());
+            }
+        }
+        double averageTime = totalTime / numberOfRepetitions;
+        System.out.println("Average time: " + averageTime + "ms");
+        System.out.println();
+
+    }
+
     public void aStarLinesSimulation(String startStop, String endStop, LocalTime time, int numberOfRepetitions){
         double startTime;
         double endTime;
@@ -136,6 +163,7 @@ public class Simulation {
 
         dijkstraBigSimulation(numberOfTrips, numberOfRepetitions, startStops, endStops, times);
         aStarBigSimulation(numberOfTrips, numberOfRepetitions, startStops, endStops, times);
+        aStarFasterBigSimulation(numberOfTrips, numberOfRepetitions, startStops, endStops, times);
         //aStarLinesBigSimulation(numberOfTrips, numberOfRepetitions, startStops, endStops, times);
     }
 
@@ -185,6 +213,38 @@ public class Simulation {
             for (int j = 0; j < numberOfRepetitions; j++) {
                 startTime = System.currentTimeMillis();
                 Result result = AStar.findShortestPath(startStops.get(i), endStops.get(i), times.get(i), graph);
+                endTime = System.currentTimeMillis();
+                totalTime += endTime - startTime;
+
+                if(j == 0){
+                    cost += result.getCost();
+                    loopIterations += result.getLoopIterations();
+                }
+            }
+            averageTime += totalTime / numberOfRepetitions;
+        }
+        System.out.println("Average cost: " + cost / numberOfTrips);
+        System.out.println("Average loop iterations: " + loopIterations / numberOfTrips);
+        averageTime /= numberOfTrips;
+        System.out.println("Average time: " + averageTime + "ms");
+        System.out.println();
+
+    }
+
+    public void aStarFasterBigSimulation(int numberOfTrips, int numberOfRepetitions, ArrayList<String> startStops,
+                                   ArrayList<String> endStops, ArrayList<LocalTime> times) {
+        double startTime;
+        double endTime;
+        double totalTime = 0;
+        double averageTime = 0;
+        double cost = 0;
+        double loopIterations = 0;
+
+        System.out.println("#######  A* Time Faster  #######");
+        for (int i = 0; i < numberOfTrips; i++) {
+            for (int j = 0; j < numberOfRepetitions; j++) {
+                startTime = System.currentTimeMillis();
+                Result result = AStarFaster.findShortestPath(startStops.get(i), endStops.get(i), times.get(i), graph);
                 endTime = System.currentTimeMillis();
                 totalTime += endTime - startTime;
 
