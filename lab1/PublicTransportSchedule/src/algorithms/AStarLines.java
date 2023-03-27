@@ -51,7 +51,7 @@ public class AStarLines {
                         costSoFar.put(edge, newCost);
                         frontier.add(Map.entry(edge, newCost +
                                 Heuristic.haversineDistanceHeuristic(graph.getVertex(next), endVertex) +
-                                AStar.countCost(currentTime, edge.getDepartureTime())));
+                                AStar.countTimeDifference(currentTime, edge.getDepartureTime())));
                         cameFrom.put(edge, currentEdge);
                         currentTimes.put(edge, edge.getArrivalTime());
                         currentLines.put(edge, edge.getLine());

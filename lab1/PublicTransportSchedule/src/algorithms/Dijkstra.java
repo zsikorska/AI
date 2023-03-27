@@ -2,7 +2,6 @@ package algorithms;
 
 import graph.Edge;
 import graph.Graph;
-import graph.Vertex;
 import simulation.Result;
 
 import java.time.LocalTime;
@@ -36,15 +35,12 @@ public class Dijkstra {
             }
             for (String next : graph.getVertex(current).getNeighbours().keySet()) {
                 currentTime = currentTimes.get(current);
-                // sort edges by time difference
-                ArrayList<Edge> edges = graph.getVertex(current).getNeighbours().get(next);
-                updateTimeDifference(edges, currentTime);
-                sortEdgesByTimeDifference(edges);
-                // choose edge with minimal time difference
-                Edge edge = edges.get(0);
 
-                int newCost = costSoFar.get(current) + countCost(currentTime, edge.getDepartureTime())
-                        + countCost(edge.getDepartureTime(), edge.getArrivalTime());
+                ArrayList<Edge> edges = graph.getVertex(current).getNeighbours().get(next);
+                Edge edge = getEdgeWithSmallestTimeDifference(edges, currentTime);
+
+                int newCost = costSoFar.get(current) + countTimeDifference(currentTime, edge.getDepartureTime())
+                        + countTimeDifference(edge.getDepartureTime(), edge.getArrivalTime());
                 if (!costSoFar.containsKey(next) || newCost < costSoFar.get(next)) {
                     costSoFar.put(next, newCost);
                     frontier.add(Map.entry(next, newCost));
@@ -57,24 +53,28 @@ public class Dijkstra {
         return new Result(startStop, endStop, startTime, null, -1, counter);
     }
 
-    private static int countCost(LocalTime startTime, LocalTime arrivalTime) {
-        int cost = 0;
+    private static int countTimeDifference(LocalTime startTime, LocalTime arrivalTime) {
+        int difference = 0;
         if (!startTime.isAfter(arrivalTime)) {
-            cost = (arrivalTime.getHour() - startTime.getHour()) * 60 + arrivalTime.getMinute() - startTime.getMinute();
+            difference = (arrivalTime.getHour() - startTime.getHour()) * 60 + arrivalTime.getMinute() - startTime.getMinute();
         } else {
-            cost = (24 - startTime.getHour() + arrivalTime.getHour()) * 60 + arrivalTime.getMinute() - startTime.getMinute();
+            difference = (24 - startTime.getHour() + arrivalTime.getHour()) * 60 + arrivalTime.getMinute() - startTime.getMinute();
         }
-        return cost;
+        return difference;
     }
 
-    public static void updateTimeDifference(ArrayList<Edge> edges, LocalTime currentTime) {
-        for (Edge edge : edges) {
-            edge.setTimeDifference(countCost(currentTime, edge.getDepartureTime()));
+    public static Edge getEdgeWithSmallestTimeDifference(ArrayList<Edge> edges, LocalTime currentTime) {
+        Edge edge = edges.get(0);
+        int cost = countTimeDifference(currentTime, edge.getDepartureTime());
+        if(cost > countTimeDifference(currentTime, edges.get(edges.size() - 1).getDepartureTime())) {
+            for (Edge e : edges) {
+                int newCost = countTimeDifference(currentTime, e.getDepartureTime());
+                if (newCost < cost) {
+                    return e;
+                }
+            }
         }
-    }
-
-    public static void sortEdgesByTimeDifference(ArrayList<Edge> edges) {
-        edges.sort(Comparator.comparingInt(Edge::getTimeDifference));
+        return edge;
     }
 
 
