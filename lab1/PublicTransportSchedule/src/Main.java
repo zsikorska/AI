@@ -4,6 +4,7 @@ import algorithms.AStar;
 import graph.Edge;
 import graph.Graph;
 import graph.Vertex;
+import simulation.Simulation;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -130,16 +131,19 @@ public class Main {
         Graph graph = readGraph("connection_graph.csv");
         //graph.printGraph();
 
-        double startTime = System.nanoTime();
-        //ArrayList<Edge> path = Dijkstra.findShortestPath("Nowowiejska", "Piastowska", LocalTime.of(12, 0), graph);
+        //double startTime = System.nanoTime();
+        //ArrayList<Edge> path = Dijkstra.findShortestPath("Nowowiejska", "Piastowska", LocalTime.of(12, 0), graph).getPath();
         //ArrayList<Edge> path = AStar.findShortestPath("Nowowiejska", "Piastowska", LocalTime.of(12, 0), graph);
-        ArrayList<Edge> path = AStar.findShortestPath("Nowowiejska", "TYNIECKA (pętla)", LocalTime.of(1, 0), graph);
+        //ArrayList<Edge> path = AStar.findShortestPath("Nowowiejska", "TYNIECKA (pętla)", LocalTime.of(1, 0), graph);
         //ArrayList<Edge> path = AStarLines.findShortestPath("Bagatela", "Bajana", LocalTime.of(12, 23), graph);
         //ArrayList<Edge> path = AStarLines.findShortestPath("Bagatela", "Piastowska", LocalTime.of(6, 0), graph);
         //ArrayList<Edge> path = AStarLines.findShortestPath("Nowowiejska", "Piastowska", LocalTime.of(12, 0), graph);
-        double endTime = System.nanoTime();
-        printPath(path);
-        System.out.println("Time: " + (endTime - startTime) / 1000000000 + "s");
+        //double endTime = System.nanoTime();
+        //printPath(path);
+        //System.out.println("Time: " + (endTime - startTime) / 1000000000 + "s");
+
+        Simulation simulation = new Simulation(graph);
+        simulation.bigSimulation(10,100);
 
     }
 }

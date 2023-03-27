@@ -3,15 +3,14 @@ package algorithms;
 import graph.Edge;
 import graph.Graph;
 import graph.Vertex;
+import simulation.Result;
 
 import java.time.LocalTime;
 import java.util.*;
 
-import static algorithms.AStar.sortEdgesByTimeDifference;
-import static algorithms.AStar.updateTimeDifference;
 
 public class AStarLines {
-    public static ArrayList<Edge> findShortestPath(String startStop, String endStop, LocalTime startTime, Graph graph) {
+    public static Result findShortestPath(String startStop, String endStop, LocalTime startTime, Graph graph) {
         PriorityQueue<Map.Entry<Edge, Double>> frontier = new PriorityQueue<>(Map.Entry.comparingByValue());
         Map<Edge, Edge> cameFrom = new HashMap<>();
         Map<Edge, Integer> costSoFar = new HashMap<>();
@@ -24,18 +23,21 @@ public class AStarLines {
         currentTimes.put(startEdge, startTime);
         currentLines.put(startEdge, "");
         Vertex endVertex = graph.getVertex(endStop);
+        int counter = 0;
 
         while (!frontier.isEmpty()) {
+            counter++;
             Edge currentEdge = frontier.poll().getKey();
 
             if (currentEdge.getEndStop().equals(endStop)) {
                 ArrayList<Edge> path = new ArrayList<>();
+                double cost = costSoFar.get(currentEdge);
                 while (!currentEdge.equals(startEdge)) {
                     path.add(currentEdge);
                     currentEdge = cameFrom.get(currentEdge);
                 }
                 Collections.reverse(path);
-                return path;
+                return new Result(startStop, endStop, startTime, path, cost, counter);
             }
 
             LocalTime currentTime = currentTimes.get(currentEdge);
@@ -48,7 +50,7 @@ public class AStarLines {
                     if (!costSoFar.containsKey(edge) || newCost < costSoFar.get(edge)) {
                         costSoFar.put(edge, newCost);
                         frontier.add(Map.entry(edge, newCost +
-                                Heuristic.euclideanDistanceHeuristic(graph.getVertex(next), endVertex) +
+                                Heuristic.haversineDistanceHeuristic(graph.getVertex(next), endVertex) +
                                 AStar.countCost(currentTime, edge.getDepartureTime())));
                         cameFrom.put(edge, currentEdge);
                         currentTimes.put(edge, edge.getArrivalTime());
@@ -57,7 +59,7 @@ public class AStarLines {
                 }
             }
         }
-        return null;
+        return new Result(startStop, endStop, startTime, null, -1, counter);
     }
 
     public static void updateChangeOfLine(Edge edge, String currentLine, Edge currentEdge) {

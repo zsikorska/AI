@@ -1,5 +1,6 @@
 package graph;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Graph {
@@ -52,5 +53,9 @@ public class Graph {
             System.out.println(key + ": " + vertexes.get(key) + "\n");
         }
 
+    }
+
+    public ArrayList<String> getVertexesNames() {
+        return new ArrayList<>(vertexes.keySet());
     }
 }

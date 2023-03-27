@@ -3,12 +3,13 @@ package algorithms;
 import graph.Edge;
 import graph.Graph;
 import graph.Vertex;
+import simulation.Result;
 
 import java.time.LocalTime;
 import java.util.*;
 
 public class Dijkstra {
-    public static ArrayList<Edge> findShortestPath(String startStop, String endStop, LocalTime startTime, Graph graph) {
+    public static Result findShortestPath(String startStop, String endStop, LocalTime startTime, Graph graph) {
         PriorityQueue<Map.Entry<String, Integer>> frontier = new PriorityQueue<>(Map.Entry.comparingByValue());
         frontier.add(Map.entry(startStop, 0));
         Map<String, Edge> cameFrom = new HashMap<>();
@@ -25,12 +26,13 @@ public class Dijkstra {
             String current = frontier.poll().getKey();
             if (current.equals(endStop)) {
                 ArrayList<Edge> path = new ArrayList<>();
+                int cost = costSoFar.get(current);
                 while (!Objects.equals(current, startStop)) {
                     path.add(cameFrom.get(current));
                     current = cameFrom.get(current).getStartStop();
                 }
                 Collections.reverse(path);
-                return path;
+                return new Result(startStop, endStop, startTime, path, cost, counter);
             }
             for (String next : graph.getVertex(current).getNeighbours().keySet()) {
                 currentTime = currentTimes.get(current);
@@ -52,7 +54,7 @@ public class Dijkstra {
             }
         }
 
-        return null;
+        return new Result(startStop, endStop, startTime, null, -1, counter);
     }
 
     private static int countCost(LocalTime startTime, LocalTime arrivalTime) {
