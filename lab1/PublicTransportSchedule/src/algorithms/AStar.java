@@ -40,13 +40,13 @@ public class AStar {
                 currentTime = currentTimes.get(current);
 
                 ArrayList<Edge> edges = graph.getVertex(current).getNeighbours().get(next);
-                Edge edge = getEdgeWithSmallestTimeDifference(edges, currentTime);
+                Edge edge = Utils.getEdgeWithSmallestTimeDifference(edges, currentTime);
 
-                int newCost = costSoFar.get(current) + countTimeDifference(currentTime, edge.getDepartureTime())
-                        + countTimeDifference(edge.getDepartureTime(), edge.getArrivalTime());
+                int newCost = costSoFar.get(current) + Utils.countTimeDifference(currentTime, edge.getDepartureTime())
+                        + Utils.countTimeDifference(edge.getDepartureTime(), edge.getArrivalTime());
                 if (!costSoFar.containsKey(next) || newCost < costSoFar.get(next)) {
                     costSoFar.put(next, newCost);
-                    frontier.add(Map.entry(next, newCost + Heuristic.haversineDistanceHeuristic(graph.getVertex(next), endVertex)));
+                    frontier.add(Map.entry(next, newCost + Utils.haversineDistanceHeuristic(graph.getVertex(next), endVertex)));
                     cameFrom.put(next, edge);
                     currentTimes.put(next, edge.getArrivalTime());
                 }
@@ -55,29 +55,4 @@ public class AStar {
 
         return new Result(startStop, endStop, startTime, null, -1, counter);
     }
-
-    public static int countTimeDifference(LocalTime startTime, LocalTime endTime) {
-        int difference = 0;
-        if (!startTime.isAfter(endTime)) {
-            difference = (endTime.getHour() - startTime.getHour()) * 60 + endTime.getMinute() - startTime.getMinute();
-        } else {
-            difference = (24 - startTime.getHour() + endTime.getHour()) * 60 + endTime.getMinute() - startTime.getMinute();
-        }
-        return difference;
-    }
-
-    public static Edge getEdgeWithSmallestTimeDifference(ArrayList<Edge> edges, LocalTime currentTime) {
-        Edge edge = edges.get(0);
-        int cost = countTimeDifference(currentTime, edge.getDepartureTime());
-        if(cost > countTimeDifference(currentTime, edges.get(edges.size() - 1).getDepartureTime())) {
-            for (Edge e : edges) {
-                int newCost = countTimeDifference(currentTime, e.getDepartureTime());
-                if (newCost < cost) {
-                    return e;
-                }
-            }
-        }
-        return edge;
-    }
-
 }

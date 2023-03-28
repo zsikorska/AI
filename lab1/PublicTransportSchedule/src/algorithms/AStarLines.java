@@ -44,14 +44,13 @@ public class AStarLines {
             String currentLine = currentLines.get(currentEdge);
             for (ArrayList<Edge> edges : graph.getVertex(currentEdge.getEndStop()).getNeighbours().values()) {
                 for (Edge edge : edges) {
-                    updateChangeOfLine(edge, currentLine, currentEdge);
                     String next = edge.getEndStop();
-                    int newCost = costSoFar.get(currentEdge) + edge.getChangeOfLine();
+                        int newCost = costSoFar.get(currentEdge) + Utils.ifChangeOfLine(edge, currentLine, currentEdge);
                     if (!costSoFar.containsKey(edge) || newCost < costSoFar.get(edge)) {
                         costSoFar.put(edge, newCost);
                         frontier.add(Map.entry(edge, newCost +
-                                Heuristic.haversineDistanceHeuristic(graph.getVertex(next), endVertex) +
-                                AStar.countTimeDifference(currentTime, edge.getDepartureTime())));
+                                Utils.haversineDistanceHeuristic(graph.getVertex(next), endVertex) +
+                                Utils.countTimeDifference(currentTime, edge.getDepartureTime())));
                         cameFrom.put(edge, currentEdge);
                         currentTimes.put(edge, edge.getArrivalTime());
                         currentLines.put(edge, edge.getLine());
@@ -61,15 +60,5 @@ public class AStarLines {
         }
         return new Result(startStop, endStop, startTime, null, -1, counter);
     }
-
-    public static void updateChangeOfLine(Edge edge, String currentLine, Edge currentEdge) {
-        if (edge.getLine().equals(currentLine) && (edge.getId() == currentEdge.getId() + 1))
-            edge.setChangeOfLine(0);
-        else
-            edge.setChangeOfLine(100000);
-    }
-
-
-
 
 }

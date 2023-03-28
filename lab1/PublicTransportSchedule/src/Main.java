@@ -5,6 +5,7 @@ import algorithms.AStar;
 import graph.Edge;
 import graph.Graph;
 import graph.Vertex;
+import simulation.Result;
 import simulation.Simulation;
 
 import java.io.File;
@@ -128,17 +129,57 @@ public class Main {
         }
     }
 
+    public static void findPath(String startStop, String endStop, LocalTime startTime, String criterium, Graph graph) {
+        if(!graph.containsVertex(startStop) || !graph.containsVertex(endStop)) {
+            System.out.println("Wrong stop name");
+            return;
+        }
+
+        double beginTime;
+        double endTime;
+        double totalTime = 0;
+        System.out.println("Start stop: " + startStop);
+        System.out.println("End stop: " + endStop);
+        System.out.println("Time: " + startTime);
+        System.out.println();
+
+        if(criterium.equals("t")){
+            beginTime = System.currentTimeMillis();
+            Result result = AStarFaster.findShortestPath(startStop, endStop, startTime, graph);
+            endTime = System.currentTimeMillis();
+            totalTime += endTime - beginTime;
+            result.printPath();
+            System.out.println("Cost: " + result.getCost());
+            System.out.println("Loop iterations: " + result.getLoopIterations());
+            System.out.println("Computation time: " + totalTime + "ms");
+            System.out.println();
+        }
+        else if(criterium.equals("p")){
+            beginTime = System.currentTimeMillis();
+            Result result = AStarLines.findShortestPath(startStop, endStop, startTime, graph);
+            endTime = System.currentTimeMillis();
+            totalTime += endTime - beginTime;
+            result.printPath();
+            System.out.println("Cost: " + result.getCost());
+            System.out.println("Loop iterations: " + result.getLoopIterations());
+            System.out.println("Time: " + totalTime + "ms");
+            System.out.println();
+        }
+        else
+            System.out.println("Wrong criterium");
+    }
+
     public static void main(String[] args) throws FileNotFoundException {
         Graph graph = readGraph("connection_graph.csv");
         //graph.printGraph();
 
-        double startTime = System.nanoTime();
+        //double startTime = System.nanoTime();
         //ArrayList<Edge> path = Dijkstra.findShortestPath("Nowowiejska", "Piastowska", LocalTime.of(12, 0), graph).getPath();
         //ArrayList<Edge> path = AStarFaster.findShortestPath("Nowowiejska", "Piastowska", LocalTime.of(12, 0), graph).getPath();
-        //ArrayList<Edge> path = AStar.findShortestPath("Nowowiejska", "TYNIECKA (pętla)", LocalTime.of(1, 0), graph);
-        //ArrayList<Edge> path = AStarLines.findShortestPath("Bagatela", "Bajana", LocalTime.of(12, 23), graph);
-        //ArrayList<Edge> path = AStarLines.findShortestPath("Bagatela", "Piastowska", LocalTime.of(6, 0), graph);
-        //ArrayList<Edge> path = AStarLines.findShortestPath("Nowowiejska", "Piastowska", LocalTime.of(12, 0), graph);
+        //ArrayList<Edge> path = AStar.findShortestPath("Nowowiejska", "TYNIECKA (pętla)", LocalTime.of(1, 0), graph).getPath();
+        //ArrayList<Edge> path = AStarLines.findShortestPath("Bagatela", "Bajana", LocalTime.of(12, 23), graph).getPath();
+        //ArrayList<Edge> path = AStarLines.findShortestPath("Bagatela", "Piastowska", LocalTime.of(6, 0), graph).getPath();
+        //ArrayList<Edge> path = AStarLines.findShortestPath("Nowowiejska", "Piastowska", LocalTime.of(12, 0), graph).getPath();
         //ArrayList<Edge> path = AStarFaster.findShortestPath("Jaszkotle - kościół", "Kiełczów - WODROL", LocalTime.of(20, 14), graph).getPath();
         //double endTime = System.nanoTime();
         //printPath(path);
@@ -147,6 +188,8 @@ public class Main {
         Simulation simulation = new Simulation(graph);
         //simulation.simulate(10,1);
         simulation.bigSimulation(10,100);
+
+        //findPath("Nowowiejska", "Piastowska", LocalTime.of(12, 0), "p", graph);
 
     }
 }
