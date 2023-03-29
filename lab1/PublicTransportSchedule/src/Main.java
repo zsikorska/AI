@@ -1,19 +1,15 @@
-import algorithms.AStarFaster;
-import algorithms.AStarLines;
-import algorithms.Dijkstra;
-import algorithms.AStar;
+import algorithms.*;
 import graph.Edge;
 import graph.Graph;
 import graph.Vertex;
 import simulation.Result;
+import simulation.ResultTabuSearch;
 import simulation.Simulation;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
@@ -145,7 +141,7 @@ public class Main {
 
         if(criterium.equals("t")){
             beginTime = System.currentTimeMillis();
-            Result result = AStarFaster.findShortestPath(startStop, endStop, startTime, graph);
+            Result result = Dijkstra.findShortestPath(startStop, endStop, startTime, graph);
             endTime = System.currentTimeMillis();
             totalTime += endTime - beginTime;
             result.printPath();
@@ -169,6 +165,27 @@ public class Main {
             System.out.println("Wrong criterium");
     }
 
+    public static void findPathTabu(Graph graph, String startStop, List<String> stops, LocalTime startTime, String criterium) {
+        double beginTime;
+        double endTime;
+        double totalTime = 0;
+        System.out.println("Start stop: " + startStop);
+        System.out.println("Stops: " + stops);
+        System.out.println("End stop: " + startStop);
+        System.out.println("Time: " + startTime);
+        System.out.println();
+
+        beginTime = System.currentTimeMillis();
+        ResultTabuSearch result = TabuSearch.findConnections(graph, startStop, stops, startTime, criterium);
+        endTime = System.currentTimeMillis();
+        totalTime += endTime - beginTime;
+        result.printPath();
+        System.out.println("Cost: " + result.getCost());
+        System.out.println("Loop iterations: " + result.getLoopIterations());
+        System.out.println("Computation time: " + totalTime + "ms");
+        System.out.println();
+    }
+
     public static void main(String[] args) throws FileNotFoundException {
         Graph graph = readGraph("connection_graph.csv");
         //graph.printGraph();
@@ -185,11 +202,16 @@ public class Main {
         //printPath(path);
         //System.out.println("Time: " + (endTime - startTime) / 1000000000 + "s");
 
-        Simulation simulation = new Simulation(graph);
-        //simulation.simulate(10,1);
-        simulation.bigSimulation(10,100);
+        //Simulation simulation = new Simulation(graph);
+        //simulation.simulate(2,1000);
+        //simulation.bigSimulation(10,1000);
 
-        //findPath("Nowowiejska", "Piastowska", LocalTime.of(12, 0), "p", graph);
+        //findPath("Bagatela", "Bajana", LocalTime.of(12, 23) ,"t", graph);
+
+        List<String> stops = Arrays.asList("Karwińska", "Śrubowa", "Weigla (Szpital)", "Hermanowska", "PL. GRUNWALDZKI");
+        findPathTabu(graph, "Słowiańska", stops, LocalTime.of(13, 0), "t");
+
+        //result.printPath();
 
     }
 }

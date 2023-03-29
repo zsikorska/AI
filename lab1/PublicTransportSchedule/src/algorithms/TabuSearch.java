@@ -12,7 +12,7 @@ public class TabuSearch {
     private static final double ASPIRATION_FACTOR = 1.1;
     private static final double NEIGHBOUR_SAMPLING_FACTOR = 0.5;
 
-    public static ResultTabuSearch findSolution(Graph graph, String startStop, List<String> stops, LocalTime startTime, String criterium) {
+    public static ResultTabuSearch findConnections(Graph graph, String startStop, List<String> stops, LocalTime startTime, String criterium) {
 
         ArrayList<String> currentSolution = new ArrayList<>(stops);
         double currentCost = findSolution(graph, startStop, currentSolution, startTime, criterium).getCost();
