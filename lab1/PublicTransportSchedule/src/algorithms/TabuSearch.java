@@ -10,6 +10,7 @@ import java.util.*;
 public class TabuSearch {
     private static final int MAX_ITERATIONS = 20;
     private static final double ASPIRATION_FACTOR = 1.1;
+    private static final double NEIGHBOUR_SAMPLING_FACTOR = 0.5;
 
     public static ResultTabuSearch findSolution(Graph graph, String startStop, List<String> stops, LocalTime startTime, String criterium) {
 
@@ -28,7 +29,14 @@ public class TabuSearch {
 
         while(iteration < MAX_ITERATIONS) {
             ArrayList<ArrayList<String>> neighbours = makeNeighbours(currentSolution);
-            neighbours.addAll(aspiration.keySet());
+
+            for(ArrayList<String> key : aspiration.keySet()) {
+                if(!neighbours.contains(key)) {
+                    neighbours.add(key);
+                }
+            }
+
+            neighbours = makeSamplingNeighbours(startStop, neighbours, graph);
 
             for(ArrayList<String> neighbour : neighbours) {
                 if(!tabu.contains(neighbour) || aspiration.containsKey(neighbour)) {
@@ -53,7 +61,7 @@ public class TabuSearch {
                         tabu.remove();
                     }
 
-                    if(neighbourCost < aspirationThreshold) {
+                    if(neighbourCost < aspirationThreshold && !aspiration.containsKey(neighbour)) {
                         aspiration.put(neighbour, neighbourCost);
                     }
                 }
@@ -111,5 +119,36 @@ public class TabuSearch {
         result.setEndStop(currentStop);
         return result;
 
+    }
+
+    public static double countPathDistance(String startStop, ArrayList<String> stops, Graph graph) {
+        double distance = 0;
+        String currentStop = startStop;
+        stops.add(startStop);
+
+        for (String stop : stops) {
+            distance += Utils.euclideanDistanceHeuristic(graph.getVertex(currentStop), graph.getVertex(stop));
+            currentStop = stop;
+        }
+        stops.remove(startStop);
+        return distance;
+    }
+
+    public static PriorityQueue<Map.Entry<ArrayList<String>, Double>> makeSamplingQueue(String startStop, ArrayList<ArrayList<String>> neighbours,  Graph graph) {
+        PriorityQueue<Map.Entry<ArrayList<String>, Double>> samplingQueue = new PriorityQueue<>(Comparator.comparingDouble(Map.Entry::getValue));
+        for (ArrayList<String> neighbour : neighbours) {
+            samplingQueue.add(Map.entry(neighbour, countPathDistance(startStop, neighbour, graph)));
+        }
+        return samplingQueue;
+    }
+
+    public static ArrayList<ArrayList<String>> makeSamplingNeighbours(String startStop, ArrayList<ArrayList<String>> neighbours, Graph graph) {
+        ArrayList<ArrayList<String>> samplingNeighbours = new ArrayList<>();
+        PriorityQueue<Map.Entry<ArrayList<String>, Double>> samplingQueue = makeSamplingQueue(startStop, neighbours, graph);
+        double numberOfNeighbours = Math.ceil(neighbours.size() * NEIGHBOUR_SAMPLING_FACTOR);
+        for (int i = 0; i < numberOfNeighbours; i++) {
+            samplingNeighbours.add(samplingQueue.poll().getKey());
+        }
+        return samplingNeighbours;
     }
 }
