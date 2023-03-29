@@ -5,14 +5,11 @@ import simulation.Result;
 import simulation.ResultTabuSearch;
 
 import java.time.LocalTime;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class TabuSearch {
-    private static final int MAX_ITERATIONS = 2;
-    private static final int MAX_TABU_LIST_SIZE = 10;
+    private static final int MAX_ITERATIONS = 20;
+    private static final double ASPIRATION_FACTOR = 1.1;
 
     public static ResultTabuSearch findSolution(Graph graph, String startStop, List<String> stops, LocalTime startTime, String criterium) {
 
@@ -23,21 +20,42 @@ public class TabuSearch {
         double bestCost = currentCost;
 
         Queue<ArrayList<String>> tabu = new ArrayDeque<>();
+        int maxTabuListSize = (stops.size() - 1) * stops.size() / 2;
+
+        Map<ArrayList<String>, Double> aspiration = new HashMap<>();
+        double aspirationThreshold = currentCost * ASPIRATION_FACTOR;
         int iteration = 0;
 
         while(iteration < MAX_ITERATIONS) {
             ArrayList<ArrayList<String>> neighbours = makeNeighbours(currentSolution);
+            neighbours.addAll(aspiration.keySet());
+
             for(ArrayList<String> neighbour : neighbours) {
-                if(!tabu.contains(neighbour)) {
+                if(!tabu.contains(neighbour) || aspiration.containsKey(neighbour)) {
                     double neighbourCost = findSolution(graph, startStop, neighbour, startTime, criterium).getCost();
                     if(neighbourCost < currentCost) {
                         currentSolution = neighbour;
                         currentCost = neighbourCost;
+
+                        aspirationThreshold = currentCost * ASPIRATION_FACTOR;
+
+                        Iterator<Map.Entry<ArrayList<String>, Double>> it = aspiration.entrySet().iterator();
+                        while(it.hasNext()) {
+                            Map.Entry<ArrayList<String>, Double> entry = it.next();
+                            if(entry.getValue() > aspirationThreshold) {
+                                it.remove();
+                            }
+                        }
                     }
-                }
-                tabu.add(neighbour);
-                if(tabu.size() > MAX_TABU_LIST_SIZE) {
-                    tabu.remove();
+
+                    tabu.add(neighbour);
+                    if(tabu.size() > maxTabuListSize) {
+                        tabu.remove();
+                    }
+
+                    if(neighbourCost < aspirationThreshold) {
+                        aspiration.put(neighbour, neighbourCost);
+                    }
                 }
             }
             if(currentCost < bestCost) {
