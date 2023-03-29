@@ -8,13 +8,14 @@ import java.time.LocalTime;
 import java.util.*;
 
 public class TabuSearch {
-    private static final int MAX_ITERATIONS = 20;
-    private static final double ASPIRATION_FACTOR = 1.1;
-    private static final double NEIGHBOUR_SAMPLING_FACTOR = 0.5;
+    private static final int MAX_ITERATIONS = 100;
+    private static final double ASPIRATION_FACTOR = 1.15;
+    private static final double NEIGHBOUR_SAMPLING_FACTOR = 0.3;
 
     public static ResultTabuSearch findConnections(Graph graph, String startStop, List<String> stops, LocalTime startTime, String criterium) {
 
         ArrayList<String> currentSolution = new ArrayList<>(stops);
+        Collections.shuffle(currentSolution);
         double currentCost = findSolution(graph, startStop, currentSolution, startTime, criterium).getCost();
 
         ArrayList<String> bestSolution = currentSolution;
