@@ -5,13 +5,15 @@ import player.RandomPlayer;
 import player.HumanPlayer;
 import player.AIPlayer;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Game {
 
     private Player player1;
     private Player player2;
-    private Board board;
+    private Player currentPlayer;
+    private final Board board;
 
     public Game() {
         this.board = new Board();
@@ -90,11 +92,50 @@ public class Game {
         }
     }
 
+    public void changePlayer() {
+        if (currentPlayer == player1) {
+            currentPlayer = player2;
+        } else {
+            currentPlayer = player1;
+        }
+    }
+
     public void start() {
         printMenu();
         chooseMode();
+        currentPlayer = player1;
 
         board.printBoard();
+        System.out.println();
+
+        while (!board.isGameOver(player1, player2)){
+            ArrayList<String> validMoves = board.getValidMoves(currentPlayer);
+            if(validMoves.size() == 0) {
+                if(currentPlayer.isBlack())
+                    System.out.println("No valid moves for black");
+                else
+                    System.out.println("No valid moves for white");
+                changePlayer();
+            }
+            else {
+                if(currentPlayer.isBlack())
+                    System.out.println("Black's turn");
+                else
+                    System.out.println("White's turn");
+
+                System.out.println("Available moves (row column): " + validMoves);
+                String move = currentPlayer.makeMove(validMoves);
+                board.makeMove(Integer.parseInt(String.valueOf(move.charAt(0))),
+                        Integer.parseInt(String.valueOf(move.charAt(2))), currentPlayer);
+                changePlayer();
+            }
+
+            System.out.println();
+            board.printBoard();
+            System.out.println();
+        }
+
+
         board.printResults();
     }
 

@@ -1,5 +1,7 @@
 package player;
 
+import java.util.ArrayList;
+
 public abstract class Player {
 
     private final boolean isBlack;
@@ -12,5 +14,5 @@ public abstract class Player {
         return isBlack;
     }
 
-    public abstract void makeMove();
+    public abstract String makeMove(ArrayList<String> moves);
 }
