@@ -1,18 +1,20 @@
 package player;
 
+import game.Board;
+
 import java.util.ArrayList;
 
 public abstract class Player {
 
-    private final boolean isBlack;
+    private final char color;
 
-    public Player(boolean isBlack) {
-        this.isBlack = isBlack;
+    public Player(char color) {
+        this.color = color;
     }
 
-    public boolean isBlack() {
-        return isBlack;
+    public char getColor() {
+        return color;
     }
 
-    public abstract String makeMove(ArrayList<String> moves);
+    public abstract String makeMove(Board board);
 }

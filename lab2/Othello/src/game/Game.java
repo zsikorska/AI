@@ -50,40 +50,40 @@ public class Game {
 
         switch (mode) {
             case 1 -> {
-                player1 = new RandomPlayer(true);
-                player2 = new RandomPlayer(false);
+                player1 = new RandomPlayer('b');
+                player2 = new RandomPlayer('w');
             }
             case 2 -> {
-                player1 = new RandomPlayer(true);
-                player2 = new HumanPlayer(false);
+                player1 = new RandomPlayer('b');
+                player2 = new HumanPlayer('w');
             }
             case 3 -> {
-                player1 = new RandomPlayer(true);
-                player2 = new AIPlayer(false);
+                player1 = new RandomPlayer('b');
+                player2 = new AIPlayer('w');
             }
             case 4 -> {
-                player1 = new HumanPlayer(true);
-                player2 = new HumanPlayer(false);
+                player1 = new HumanPlayer('b');
+                player2 = new HumanPlayer('w');
             }
             case 5 -> {
-                player1 = new HumanPlayer(true);
-                player2 = new RandomPlayer(false);
+                player1 = new HumanPlayer('b');
+                player2 = new RandomPlayer('w');
             }
             case 6 -> {
-                player1 = new HumanPlayer(true);
-                player2 = new AIPlayer(false);
+                player1 = new HumanPlayer('b');
+                player2 = new AIPlayer('w');
             }
             case 7 -> {
-                player1 = new AIPlayer(true);
-                player2 = new AIPlayer(false);
+                player1 = new AIPlayer('b');
+                player2 = new AIPlayer('w');
             }
             case 8 -> {
-                player1 = new AIPlayer(true);
-                player2 = new RandomPlayer(false);
+                player1 = new AIPlayer('b');
+                player2 = new RandomPlayer('w');
             }
             case 9 -> {
-                player1 = new AIPlayer(true);
-                player2 = new HumanPlayer(false);
+                player1 = new AIPlayer('b');
+                player2 = new HumanPlayer('w');
             }
             default -> {
                 System.out.println("Choose number between 1 and 9");
@@ -108,25 +108,25 @@ public class Game {
         board.printBoard();
         System.out.println();
 
-        while (!board.isGameOver(player1, player2)){
-            ArrayList<String> validMoves = board.getValidMoves(currentPlayer);
+        while (!board.isGameOver()){
+            ArrayList<String> validMoves = board.getValidMoves(currentPlayer.getColor());
             if(validMoves.size() == 0) {
-                if(currentPlayer.isBlack())
+                if(currentPlayer.getColor() == 'b')
                     System.out.println("No valid moves for black");
                 else
                     System.out.println("No valid moves for white");
                 changePlayer();
             }
             else {
-                if(currentPlayer.isBlack())
+                if(currentPlayer.getColor() == 'b')
                     System.out.println("Black's turn");
                 else
                     System.out.println("White's turn");
 
                 System.out.println("Available moves (row column): " + validMoves);
-                String move = currentPlayer.makeMove(validMoves);
+                String move = currentPlayer.makeMove(board);
                 board.makeMove(Integer.parseInt(String.valueOf(move.charAt(0))),
-                        Integer.parseInt(String.valueOf(move.charAt(2))), currentPlayer);
+                        Integer.parseInt(String.valueOf(move.charAt(2))), currentPlayer.getColor());
                 changePlayer();
             }
 

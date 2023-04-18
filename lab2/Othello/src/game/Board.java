@@ -32,6 +32,14 @@ public class Board {
         return size;
     }
 
+    public Board cloneBoard(){
+        Board newBoard = new Board();
+        for (int i = 0; i < size; i++) {
+            System.arraycopy(board[i], 0, newBoard.board[i], 0, size);
+        }
+        return newBoard;
+    }
+
     public void printBoard() {
         System.out.println("##### Board #####");
         System.out.println();
@@ -78,23 +86,22 @@ public class Board {
             System.out.println("White won !!!");
     }
 
-    public ArrayList<String> getValidMoves(Player player) {
+    public ArrayList<String> getValidMoves(char color) {
         ArrayList<String> validMoves = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                if(isValidMove(i, j, player))
+                if(isValidMove(i, j, color))
                     validMoves.add(i + " " + j);
             }
         }
         return validMoves;
     }
 
-    public boolean isValidMove(int currentRow, int currentCol, Player player) {
+    public boolean isValidMove(int currentRow, int currentCol, char playerColor) {
         if (board[currentRow][currentCol] != ' ')
             return false;
 
-        char opponentColor = player.isBlack() ? 'w' : 'b';
-        char playerColor = player.isBlack() ? 'b' : 'w';
+        char opponentColor = playerColor == 'b' ? 'w' : 'b';
 
         // Check all 8 directions of possible moves
         int[] rowDirections = {-1, -1, -1, 0, 0, 1, 1, 1};
@@ -122,14 +129,13 @@ public class Board {
         return false;
     }
 
-    public boolean isGameOver(Player player1, Player player2) {
+    public boolean isGameOver() {
         // Check if there are no valid moves for both players
-        return getValidMoves(player1).size() == 0 && getValidMoves(player2).size() == 0;
+        return getValidMoves('b').size() == 0 && getValidMoves('w').size() == 0;
     }
 
-    public void makeMove(int currentRow, int currentCol, Player player) {
-        char opponentColor = player.isBlack() ? 'w' : 'b';
-        char playerColor = player.isBlack() ? 'b' : 'w';
+    public void makeMove(int currentRow, int currentCol, char playerColor) {
+        char opponentColor = playerColor == 'b' ? 'w' : 'b';
 
         // Check all 8 directions of possible moves
         int[] rowDirections = {-1, -1, -1, 0, 0, 1, 1, 1};
