@@ -2,9 +2,8 @@ package player;
 
 import algorithms.Result;
 import game.Board;
-import algorithms.MinMax;
-
-import java.util.ArrayList;
+import algorithms.Minimax;
+import algorithms.AlphaBeta;
 
 public class AIPlayer extends Player {
 
@@ -21,7 +20,8 @@ public class AIPlayer extends Player {
 
     @Override
     public String makeMove(Board board) {
-        Result result = MinMax.minMax(board, depth, getColor(), getColor() == 'w' ? 'b' : 'w', true);
+        Result result = Minimax.minimax(board, depth, getColor(), getColor() == 'w' ? 'b' : 'w', true);
+        //Result result = AlphaBeta.minimaxAlphaBeta(board, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, getColor(), getColor() == 'w' ? 'b' : 'w', true);
         System.out.println("Move: " + result.getBestMove());
         System.out.println();
         return result.getBestMove();
