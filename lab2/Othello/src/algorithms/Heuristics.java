@@ -36,7 +36,7 @@ public class Heuristics {
     }
 
     public static double cornersCaptured(Board board, char playerColor) {
-        return cornersOccupancy(board, playerColor) + cornersCloseness(board, playerColor);
+        return 3 * cornersOccupancy(board, playerColor) + cornersCloseness(board, playerColor);
     }
 
     /*
@@ -189,10 +189,9 @@ public class Heuristics {
 
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
-                if (board[i][j] == playerColor) {
-                    opponentMoves = countFreeSpacesNextToOpponentField(opponentMoves, board, i, j);
-                } else if (board[i][j] == opponentColor) {
-                    playerMoves = countFreeSpacesNextToOpponentField(playerMoves, board, i, j);
+                if (board[i][j] == ' ') {
+                    playerMoves += isPotentialMoveAvailable(board, i, j, opponentColor);
+                    opponentMoves += isPotentialMoveAvailable(board, i, j, playerColor);
                 }
             }
         }
@@ -200,33 +199,25 @@ public class Heuristics {
         return playerMoves - opponentMoves;
     }
 
-    private static int countFreeSpacesNextToOpponentField(int playerMoves, char[][] board, int i, int j) {
-        if (i > 0 && board[i - 1][j] == ' ') {
-            playerMoves++;
+    public static int isPotentialMoveAvailable(char[][] board, int i, int j, char opponentColor) {
+        int[] rowDirections = {-1, -1, -1, 0, 0, 1, 1, 1};
+        int[] colDirections = {-1, 0, 1, -1, 1, -1, 0, 1};
+
+        for (int k = 0; k < 8; k++) {
+            int row = i + rowDirections[k];
+            int col = j + colDirections[k];
+
+            if (row >= 0 && row < board.length && col >= 0 && col < board.length) {
+                if (board[row][col] == opponentColor) {
+                    return 1;
+                }
+            }
         }
-        if (i < board.length - 1 && board[i + 1][j] == ' ') {
-            playerMoves++;
-        }
-        if (j > 0 && board[i][j - 1] == ' ') {
-            playerMoves++;
-        }
-        if (j < board.length - 1 && board[i][j + 1] == ' ') {
-            playerMoves++;
-        }
-        if (i > 0 && j > 0 && board[i - 1][j - 1] == ' ') {
-            playerMoves++;
-        }
-        if (i > 0 && j < board.length - 1 && board[i - 1][j + 1] == ' ') {
-            playerMoves++;
-        }
-        if (i < board.length - 1 && j > 0 && board[i + 1][j - 1] == ' ') {
-            playerMoves++;
-        }
-        if (i < board.length - 1 && j < board.length - 1 && board[i + 1][j + 1] == ' ') {
-            playerMoves++;
-        }
-        return playerMoves;
+
+        return 0;
     }
+
+
 
 
     /*

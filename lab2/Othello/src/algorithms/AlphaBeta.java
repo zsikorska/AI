@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import static algorithms.Heuristics.complexHeuristic;
 
 public class AlphaBeta {
-    private double coinParityWeight = 1;
+    private double coinParityWeight = 0.2;
     private double cornersCapturedWeight = 1;
-    private double mobilityWeight = 1;
-    private double stabilityWeight = 1;
+    private double mobilityWeight = 0.7;
+    private double stabilityWeight = 0.7;
 
     public AlphaBeta() {
     }
