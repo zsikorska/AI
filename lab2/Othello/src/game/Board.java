@@ -59,6 +59,17 @@ public class Board {
         }
     }
 
+    public int countPoints(char color) {
+        int points = 0;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if(board[i][j] == color)
+                    points++;
+            }
+        }
+        return points;
+    }
+
     public void printResults() {
         int black = 0;
         int white = 0;

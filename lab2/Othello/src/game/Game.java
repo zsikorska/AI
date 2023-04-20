@@ -19,6 +19,12 @@ public class Game {
         this.board = new Board();
     }
 
+    public Game(Player player1, Player player2) {
+        this.board = new Board();
+        this.player1 = player1;
+        this.player2 = player2;
+    }
+
     public void printMenu() {
         System.out.println();
         System.out.println("##### Othello Game #####");
@@ -139,4 +145,24 @@ public class Game {
         board.printResults();
     }
 
+    public void play(){
+        currentPlayer = player1;
+
+        while (!board.isGameOver()) {
+            ArrayList<String> validMoves = board.getValidMoves(currentPlayer.getColor());
+            if (validMoves.size() == 0) {
+                changePlayer();
+            } else {
+                String move = currentPlayer.makeMove(board);
+                board.makeMove(Integer.parseInt(String.valueOf(move.charAt(0))),
+                        Integer.parseInt(String.valueOf(move.charAt(2))), currentPlayer.getColor());
+                changePlayer();
+            }
+
+        }
+    }
+
+    public Board getBoard() {
+        return board;
+    }
 }

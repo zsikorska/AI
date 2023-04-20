@@ -12,6 +12,8 @@ public class AlphaBeta {
     private double mobilityWeight = 0.7;
     private double stabilityWeight = 0.7;
 
+    private int counter = 0;
+
     public AlphaBeta() {
     }
 
@@ -22,19 +24,28 @@ public class AlphaBeta {
         this.stabilityWeight = stabilityWeight;
     }
 
+    public void setCounter(int counter) {
+        this.counter = counter;
+    }
+
+    public int getCounter() {
+        return counter;
+    }
+
     // player is the maximizing player
     // opponent is the minimizing player
     public Result minimaxAlphaBeta(Board board, int depth, double alpha, double beta, char playerColor, char opponentColor, boolean isMaximizing) {
         if (depth == 0 || board.isGameOver()) {
+            counter++;
             // count the difference from maximizing player perspective
             return new Result("", complexHeuristic(board, playerColor, coinParityWeight, cornersCapturedWeight,
-                    mobilityWeight, stabilityWeight));
+                    mobilityWeight, stabilityWeight), counter);
         }
 
         // player turn
         else if (isMaximizing){
             double maxValue = Integer.MIN_VALUE;
-            Result bestResult = new Result("", Integer.MIN_VALUE);
+            Result bestResult = new Result("", Integer.MIN_VALUE, counter);
             ArrayList<String> validMoves = board.getValidMoves(playerColor);
 
             if(validMoves.size() == 0) {
@@ -59,14 +70,14 @@ public class AlphaBeta {
                     }
                 }
             }
-
+            bestResult.setEvaluationCount(counter);
             return bestResult;
         }
 
         // opponent turn
         else{
             double minValue = Integer.MAX_VALUE;
-            Result bestResult = new Result("", Integer.MAX_VALUE);
+            Result bestResult = new Result("", Integer.MAX_VALUE, counter);
             ArrayList<String> validMoves = board.getValidMoves(playerColor);
 
             if(validMoves.size() == 0) {
@@ -92,6 +103,7 @@ public class AlphaBeta {
                     }
                 }
             }
+            bestResult.setEvaluationCount(counter);
             return bestResult;
         }
     }
