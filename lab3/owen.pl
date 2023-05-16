@@ -59,7 +59,7 @@ występuje_błąd(piekarnik_nie_działa).
 występuje_błąd(nie_można_naciskać_przycisków).
 
 
-% Informacje o przyczynach błędów
+% Informacje o przyczynach błędów (przyczyna, błąd)
 powoduje_błąd(brak_zasilania, wyłącza_się_w_trakcie_pracy).
 
 powoduje_błąd(otwarte_drzwiczki, nie_podgrzewa).
@@ -85,7 +85,7 @@ powoduje_błąd(blokada, nie_można_naciskać_przycisków) :-
 
 
 
-% Informacje o częściach powodujących błędy
+% Informacje o częściach powodujących błędy (przyczyna, część)
 część_powodująca_błąd(brak_zasilania, zasilanie).
 część_powodująca_błąd(otwarte_drzwiczki, drzwiczki).
 część_powodująca_błąd(źle_ustawione_przyciski_sterowania, panel_użytkownika).
@@ -102,7 +102,7 @@ część_powodująca_błąd(blokada, przycisk(blokada)).
 część_powodująca_błąd(_, piekarnik).
 
 
-% Informacje o naprawach
+% Informacje o naprawach (rozwiązanie, błąd, przyczyna)
 naprawia_błąd(podłączenie_zasilania, nie_podłączenie_do_gniazdka, wyłącza_się_w_trakcie_pracy).
 naprawia_błąd(zamknięcie_drzwiczek, nie_podgrzewa, otwarte_drzwiczki).
 
@@ -122,30 +122,60 @@ naprawia_błąd(usunięcie_wilgoci, nie_można_naciskać_przycisków, wilgoć).
 naprawia_błąd(wyłączenie_blokady, nie_można_naciskać_przycisków, blokada).
 
 
-znajdź_błędy_przyczyny_rozwiązania(Błąd, Przyczyna, Rozwiązanie, Część) :-
-    występuje_błąd(Błąd),
-    powoduje_błąd(Przyczyna, Błąd),
-    część_powodująca_błąd(Przyczyna, Część),
-    naprawia_błąd(Rozwiązanie, Błąd, Przyczyna).
+rozwiąż_problem(Błąd, Przyczyna, Rozwiązanie) :-
+    setof((Błąd, Przyczyna, Rozwiązanie), (
+        występuje_błąd(Błąd),
+        powoduje_błąd(Przyczyna, Błąd),
+        naprawia_błąd(Rozwiązanie, Błąd, Przyczyna)
+    ), Wyniki),
+    member((Błąd, Przyczyna, Rozwiązanie), Wyniki).
+
+rozwiąż_problem_complex(Błąd, Przyczyna, Rozwiązanie, Część) :-
+    setof((Błąd, Przyczyna, Rozwiązanie, Część), (
+        występuje_błąd(Błąd),
+        powoduje_błąd(Przyczyna, Błąd),
+        część_powodująca_błąd(Przyczyna, Część),
+        naprawia_błąd(Rozwiązanie, Błąd, Przyczyna)
+    ), Wyniki),
+    member((Błąd, Przyczyna, Rozwiązanie, Część), Wyniki).
 
 
-write_list([]).
-write_list([Head|Tail]) :-
-  	write(Head), nl,
-  	write_list(Tail).
+wyświetl_listę([]).
+wyświetl_listę([Głowa|Ogon]) :-
+  	write(Głowa), nl,
+  	wyświetl_listę(Ogon).
 
-części_powodujące_błąd(Błąd) :-
+znajdź_części_powodujące_błąd(Błąd) :-
   	findall(Część, (powoduje_błąd(Przyczyna, Błąd), część_powodująca_błąd(Przyczyna, Część)), Lista),
-  	list_to_set(Lista, UniqueLista),
-  	write_list(UniqueLista).
+  	list_to_set(Lista, ListaBezDuplikatów),
+  	wyświetl_listę(ListaBezDuplikatów).
+
 
 
 /** <examples>
 
-?- znajdź_błędy_przyczyny_rozwiązania(Błąd, Przyczyna, Rozwiązanie, panel_użytkownika).
+?- posiada(piekarnik, zasilanie).
+?- posiada(panel_użytkownika, przycisk(blokada)).
+?- posiada(piekarnik, mikrofalówka).
+?- posiada(piekarnik, X).
+?- posiada(_, przycisk(X)), przycisk_jest_typu(X, pokrętło).
 
-?- części_powodujące_błąd(nie_podgrzewa).
-?- części_powodujące_błąd(wyłącza_się_w_trakcie_pracy).
+?- przycisk_jest_typu(start, X).
+?- przycisk_jest_typu(X, Y).
 
+?- ma_funkcję(piekarnik, X), ma_funkcję(X, Y).
+
+
+?- rozwiąż_problem_complex(Błąd, Przyczyna, Rozwiązanie, panel_użytkownika).
+?- rozwiąż_problem_complex(Błąd, brak_separatora, Rozwiązanie, Część).
+
+?- rozwiąż_problem(nie_podgrzewa, Przyczyna, Rozwiązanie).
+?- rozwiąż_problem(nie_podgrzewa, brak_separatora, Rozwiązanie).
+?- rozwiąż_problem(nie_podgrzewa, otwarte_drzwiczki, Rozwiązanie).
+
+?- przycisk_jest_typu(X, dotykowy), rozwiąż_problem_complex(Błąd, Przyczyna, Rozwiązanie, przycisk(X)).
+
+?- znajdź_części_powodujące_błąd(nie_podgrzewa).
+?- znajdź_części_powodujące_błąd(wyłącza_się_w_trakcie_pracy).
 
 */
