@@ -5,7 +5,6 @@ posiada(piekarnik, grzałka).
 posiada(piekarnik, lampka).
 posiada(piekarnik, separator).
 posiada(piekarnik, zasilanie).
-posiada(piekarnik, wyświetlacz).
 posiada(piekarnik, timer).
 posiada(piekarnik, panel_użytkownika).
 posiada(piekarnik, czujnik_temperatury).
@@ -99,7 +98,6 @@ część_powodująca_błąd(wilgoć, panel_użytkownika).
 część_powodująca_błąd(wilgoć, przycisk(_)) :- przycisk_jest_typu(_, dotykowy).
 część_powodująca_błąd(blokada, panel_użytkownika).
 część_powodująca_błąd(blokada, przycisk(blokada)).
-część_powodująca_błąd(_, piekarnik).
 
 
 % Informacje o naprawach (rozwiązanie, błąd, przyczyna)
